@@ -1,19 +1,14 @@
-# Backend de Recompensas - RewardApp
+# Automatización de Retiros Pix - Mercado Pago API
 
-Servidor backend desarrollado en **Node.js (Express)** diseñado para gestionar la acreditación automática de recompensas mediante Postbacks y procesar solicitudes de retiro.
+Este paquete contiene la implementación backend en **Node.js** utilizando el SDK oficial de **Mercado Pago (`mercadopago`)** para automatizar las transferencias de dinero salientes (**Payouts**) mediante **Pix** hacia las cuentas de tus usuarios.
 
-## Estructura del proyecto
-- `server.js`: Lógica principal del servidor con endpoints de Postback (`/api/postback`), consulta de usuario y procesamiento de retiros.
-- `package.json`: Dependencias del proyecto.
-- `.env.example`: Variables de entorno requeridas.
+## Archivos incluidos:
+- `payoutService.js`: Clase encapsulada para interactuar con la API de Payouts de Mercado Pago y realizar transferencias Pix por clave (CPF, email, teléfono, etc.).
+- `server.js`: Servidor Express con el endpoint `/api/withdraw-pix` que valida saldos, calcula conversiones de monedas a reales (BRL) y ejecuta el pago automático.
+- `package.json`: Dependencias actualizadas con el SDK oficial de Mercado Pago.
+- `.env.example`: Plantilla de variables de entorno para tu token privado.
 
-## Cómo ejecutarlo localmente:
-1. Instala las dependencias:
-   ```bash
-   npm install
-   ```
-2. Configura tus variables de entorno copiando `.env.example` a `.env`.
-3. Inicia el servidor de desarrollo:
-   ```bash
-   npm run dev
-   ```
+## Requisitos Previos:
+1. Tener una cuenta verificado de Mercado Pago (Brasil).
+2. Obtener tus credenciales de producción (`Access Token` que comienza con `APP_USR-...`).
+3. Asegurar saldo positivo en tu cuenta de Mercado Pago para poder cubrir las transferencias automáticas hacia los usuarios.
