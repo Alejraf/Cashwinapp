@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RewardApp - Estilo Cash'em All</title>
+    <title>RewardApp - Ofertas y Juegos</title>
     <style>
         :root {
             --bg-primary: #120A2A;
@@ -24,37 +24,17 @@
         .content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
         .section-title { font-size: 1.1rem; margin-bottom: 12px; color: var(--text-muted); font-weight: 600; }
         
-        /* New Retention Elements Styles */
-        .bonus-banner { background: linear-gradient(135deg, #FFD700, #FF8C00); color: #120A2A; border-radius: 14px; padding: 12px 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; box-shadow: 0 4px 15px rgba(255,215,0,0.3); }
-        .bonus-btn { background: #120A2A; color: #FFD700; border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
-        
-        .progress-container { background-color: var(--bg-card); border-radius: 14px; padding: 15px; margin-bottom: 15px; border: 1px solid #3B2065; }
-        .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--text-muted); }
-        .progress-bar-bg { width: 100%; height: 8px; background: #120A2A; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { width: 25%; height: 100%; background: linear-gradient(90deg, #9333EA, #FFD700); border-radius: 4px; transition: width 0.3s ease; }
+        /* Offerwall Card */
+        .offerwall-card { background: linear-gradient(135deg, #2D1559, #3B2065); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--accent-purple); text-align: center; }
+        .offerwall-card h3 { color: var(--accent-gold); margin-bottom: 8px; }
+        .offerwall-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+        .offer-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #120A2A; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        .multiplier-badge { background: rgba(147, 51, 234, 0.2); border: 1px dashed var(--accent-purple); color: var(--text-muted); padding: 8px 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 15px; }
-
-        .game-card { background-color: var(--bg-card); border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #3B2065; position: relative; overflow: hidden; }
-        .game-badge { position: absolute; top: 0; right: 0; background: #FF4757; color: white; font-size: 0.65rem; padding: 2px 8px; border-bottom-left-radius: 8px; font-weight: bold; }
-        .game-info h3 { font-size: 1rem; margin-bottom: 4px; }
-        .game-info p { font-size: 0.8rem; color: var(--text-muted); }
-        .play-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #120A2A; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-        
-        .payout-card { background-color: var(--bg-card); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid #3B2065; text-align: center; }
-        .payout-card h3 { margin-bottom: 8px; }
-        .payout-card p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; }
-        .withdraw-btn { background: var(--accent-purple); color: white; border: none; width: 100%; padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; background-color: #170C35; display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #3B2065; }
         .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
         .nav-item.active { color: var(--accent-gold); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 10, 42, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; z-index: 100; }
-        .modal h2 { margin-bottom: 10px; color: var(--accent-gold); }
-        .modal p { color: var(--text-muted); margin-bottom: 20px; }
-        .close-modal { background: #FF4757; color: white; border: none; padding: 10px 20px; border-radius: 12px; margin-top: 20px; cursor: pointer; font-weight: bold; }
-        .pix-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #3B2065; background: #120A2A; color: white; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -67,94 +47,40 @@
             </div>
         </div>
         <div class="content">
-            <div id="tab-games" class="tab-content active">
-                <!-- Daily Bonus Banner -->
-                <div class="bonus-banner">
-                    <span>🎁 Bono Diario: +150 🪙</span>
-                    <button class="bonus-btn" onclick="claimDailyBonus()">Reclamar</button>
-                </div>
-
-                <!-- Progress toward withdrawal -->
-                <div class="progress-container">
-                    <div class="progress-info">
-                        <span>Meta de Retiro (Pix)</span>
-                        <span id="progressText">1,250 / 5,000 🪙</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="progressBar" style="width: 25%;"></div>
-                    </div>
-                </div>
-
-                <!-- Multiplier Banner -->
-                <div class="multiplier-badge">
-                    ⚡ <strong>Multiplicador x1.5</strong> activo en todos los juegos
-                </div>
-
-                <div class="section-title">Juegos recomendados</div>
+            <div id="tab-offers" class="tab-content active">
+                <div class="section-title">Muros de Ofertas Disponibles</div>
                 
-                <div class="game-card">
-                    <div class="game-badge">HOT 🔥</div>
-                    <div class="game-info"><h3>Coin Master Brasil</h3><p>Gana 45 monedas / min</p></div>
-                    <button class="play-btn" onclick="openGame('Coin Master Brasil', 45)">Jugar</button>
+                <div class="offerwall-card">
+                    <h3>💎 BitLabs Ofertas & Juegos</h3>
+                    <p>Completa juegos y encuestas para ganar recompensas instantáneas.</p>
+                    <button class="offer-btn" onclick="openOfferwall('bitlabs')">Abrir BitLabs</button>
                 </div>
-                
-                <div class="game-card">
-                    <div class="game-badge">POPULAR ⭐</div>
-                    <div class="game-info"><h3>Stardew Valley Mod</h3><p>Gana 60 monedas / min</p></div>
-                    <button class="play-btn" onclick="openGame('Stardew Valley Mod', 60)">Jugar</button>
-                </div>
-            </div>
 
-            <div id="tab-payout" class="tab-content">
-                <div class="section-title">Retirar Recompensas</div>
-                <div class="payout-card">
-                    <h3>🇧🇷 Pix Instantáneo</h3>
-                    <p>Mínimo: 5,000 monedas (R$ 5.00)</p>
-                    <input type="text" id="pixKeyInput" class="pix-input" placeholder="Ingresa tu clave Pix (CPF/Email)">
-                    <button class="withdraw-btn" onclick="requestWithdrawal()">Retirar por Pix</button>
+                <div class="offerwall-card">
+                    <h3>📋 CPX Research Encuestas</h3>
+                    <p>Comparte tu opinión y gana miles de monedas por encuesta.</p>
+                    <button class="offer-btn" onclick="openOfferwall('cpx')">Abrir CPX Research</button>
                 </div>
             </div>
 
             <div id="tab-profile" class="tab-content">
                 <div class="section-title">Mi Cuenta</div>
-                <div class="payout-card" style="text-align: left;">
+                <div class="offerwall-card" style="text-align: left;">
                     <p><strong>Usuario ID:</strong> user_123</p>
                     <p style="margin-top: 8px;"><strong>Balance:</strong> <span id="profile-balance">1,250</span> 🪙</p>
-                    <p style="margin-top: 8px;"><strong>Estado VIP:</strong> Activo 🟢</p>
                 </div>
             </div>
         </div>
 
-        <div class="modal" id="gameModal">
-            <h2 id="modalGameTitle">Jugando...</h2>
-            <p>Mantén la sesión activa para sumar monedas.</p>
-            <h3 style="color: var(--accent-gold); font-size: 2rem; margin: 20px 0;" id="sessionEarned">+0 🪙</h3>
-            <button class="close-modal" onclick="closeGame()">Recoger y Salir</button>
-        </div>
-
         <div class="nav-bar">
-            <button class="nav-item active" onclick="switchTab('games', this)"><span>🎮</span> Juegos</button>
-            <button class="nav-item" onclick="switchTab('payout', this)"><span>💳</span> Retirar</button>
+            <button class="nav-item active" onclick="switchTab('offers', this)"><span>🎁</span> Ofertas</button>
             <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span> Perfil</button>
         </div>
     </div>
 
     <script>
         let currentBalance = 1250;
-        let sessionTimer = null;
-        let earnedInSession = 0;
-        let currentRate = 0;
-        let dailyClaimed = false;
-
-        function updateUI() {
-            document.getElementById('balance').innerText = currentBalance.toLocaleString();
-            document.getElementById('profile-balance').innerText = currentBalance.toLocaleString();
-            
-            // Update progress bar (Target: 5,000 coins)
-            let percent = Math.min((currentBalance / 5000) * 100, 100);
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressText').innerText = `${currentBalance.toLocaleString()} / 5,000 🪙`;
-        }
+        const userId = "user_123"; // ID único del usuario actual
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -163,47 +89,19 @@
             element.classList.add('active');
         }
 
-        function claimDailyBonus() {
-            if (dailyClaimed) {
-                alert('¡Ya reclamaste tu bono diario hoy! Vuelve mañana.');
-                return;
+        function openOfferwall(provider) {
+            let url = "";
+            if(provider === 'bitlabs') {
+                // Reemplaza con tu ID de oferta de BitLabs y pasa el userId en el sub_id
+                url = `https://web.bitlabs.ai/?uid=${userId}&token=TU_BITLABS_APP_TOKEN`;
+            } else if(provider === 'cpx') {
+                // Reemplaza con tu ID de CPX Research
+                url = `https://offerwall.cpx-research.com/index.php?app_id=TU_CPX_APP_ID&ext_user_id=${userId}`;
             }
-            currentBalance += 150;
-            dailyClaimed = true;
-            updateUI();
-            alert('¡Bono diario reclamado con éxito! +150 🪙');
+            
+            // Abre el muro de ofertas en una nueva ventana o pestaña del navegador móvil
+            window.open(url, '_blank');
         }
-
-        function openGame(gameName, rate) {
-            document.getElementById('modalGameTitle').innerText = gameName;
-            document.getElementById('gameModal').style.display = 'flex';
-            earnedInSession = 0;
-            currentRate = Math.round(rate * 1.5); // Apply x1.5 multiplier
-            document.getElementById('sessionEarned').innerText = `+0 🪙`;
-            sessionTimer = setInterval(() => {
-                earnedInSession += currentRate;
-                document.getElementById('sessionEarned').innerText = `+${earnedInSession} 🪙`;
-            }, 3000);
-        }
-
-        function closeGame() {
-            clearInterval(sessionTimer);
-            currentBalance += earnedInSession;
-            updateUI();
-            document.getElementById('gameModal').style.display = 'none';
-        }
-
-        function requestWithdrawal() {
-            const pixKey = document.getElementById('pixKeyInput').value;
-            if(!pixKey) { alert('Por favor ingresa tu clave Pix'); return; }
-            if(currentBalance < 5000) { alert('Saldo insuficiente. Mínimo 5,000 monedas.'); return; }
-            alert('¡Solicitud de retiro enviada! Procesando transferencia Pix...');
-            currentBalance -= 5000;
-            updateUI();
-        }
-
-        // Initialize UI
-        updateUI();
     </script>
 </body>
 </html>

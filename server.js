@@ -1,54 +1,41 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const PixPayoutService = require('./payoutService');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT || 3000;
-const pixService = new PixPayoutService(process.env.MERCADO_PAGO_ACCESS_TOKEN);
 
 let usersDB = {
-    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 1250, email: "rafael@example.com" }
+    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 1250 }
 };
 
+/**
+ * Endpoint de Postback universal para BitLabs / CPX Research / Adjoe
+ * Cuando el usuario completa una oferta, el proveedor llama a esta URL de forma automática.
+ */
 app.get('/api/postback', (req, res) => {
-    const { userId, reward, offerId, signature } = req.query;
-    if (!userId || !reward) return res.status(400).json({ error: "Parámetros incompletos" });
+    // Los parámetros varían ligeramente según el proveedor (ej. uid/sub_id para usuario, reward/payout para la ganancia)
+    const { userId, reward, payout, sub_id, trans_id } = req.query;
 
-    const rewardAmount = parseInt(reward, 10);
-    if (!usersDB[userId]) usersDB[userId] = { id: userId, name: "Usuario", coins: 0 };
-    usersDB[userId].coins += rewardAmount;
+    const targetUser = userId || sub_id;
+    const earnedCoins = parseInt(reward || payout, 10);
 
-    console.log(`[POSTBACK] Usuario ${userId} ganó +${rewardAmount} monedas (Oferta: ${offerId || 'N/A'})`);
-    return res.status(200).json({ success: true, newBalance: usersDB[userId].coins });
-});
-
-app.post('/api/withdraw-pix', async (req, res) => {
-    const { userId, pixKey, pixKeyType, amountCoins } = req.body;
-    const user = usersDB[userId];
-    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
-
-    const MIN_COINS = 5000;
-    const CONVERSION_RATE = 1000;
-
-    if (amountCoins < MIN_COINS || user.coins < amountCoins) {
-        return res.status(400).json({ error: "Saldo insuficiente" });
+    if (!targetUser || isNaN(earnedCoins)) {
+        return res.status(400).json({ error: "Parámetros de postback incompletos o inválidos" });
     }
 
-    const amountBRL = parseFloat((amountCoins / CONVERSION_RATE).toFixed(2));
-    const externalRef = `withdrawal_${userId}_${Date.now()}`;
-
-    const payoutResult = await pixService.sendPixPayout(externalRef, amountBRL, pixKey, pixKeyType || 'CPF', user.name);
-
-    if (payoutResult.success) {
-        user.coins -= amountCoins;
-        return res.status(200).json({ success: true, message: "Retiro Pix procesado", remainingCoins: user.coins });
-    } else {
-        return res.status(500).json({ success: false, error: payoutResult.error });
+    if (!usersDB[targetUser]) {
+        usersDB[targetUser] = { id: targetUser, name: "Nuevo Usuario", coins: 0 };
     }
+
+    usersDB[targetUser].coins += earnedCoins;
+
+    console.log(`[POSTBACK RECIBIDO] Usuario: ${targetUser} | Monedas acreditadas: +${earnedCoins} | Transacción: ${trans_id || 'N/A'}`);
+
+    return res.status(200).send("OK");
 });
 
-app.listen(PORT, () => console.log(`RewardApp Master Backend corriendo en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor con Postbacks de Offerwall activo en puerto ${PORT}`));
