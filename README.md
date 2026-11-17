@@ -1,11 +1,9 @@
-# RewardApp - Estilo Cash'em All
+# Marco Legal y Reglas - RewardApp
 
-Aplicación web de recompensas móvil lista para desplegar en GitHub Pages o subir a tu repositorio.
+Este paquete contiene los documentos legales esenciales para operar tu aplicación de recompensas estilo Cash'em All cumpliendo con los estándares normativos (incluyendo LGPD para Brasil).
 
-## Estructura del proyecto
-- `index.html`: Archivo principal con la interfaz móvil, diseño oscuro/dorado, simulación de tiempo de juego y pasarela de retiros (Pix / PayPal).
+## Archivos incluidos:
+- `terms.md`: Términos y Condiciones de uso, reglas de retiros y políticas anti-fraude.
+- `privacy_policy_lgpd.md`: Política de Privacidad adaptada a la LGPD para el tratamiento seguro de datos y claves Pix.
 
-## ¿Cómo subir a GitHub?
-1. Crea un nuevo repositorio en GitHub.
-2. Sube estos archivos (`index.html` y `README.md`) directamente desde la web de GitHub o mediante git.
-3. Activa **GitHub Pages** en la configuración de tu repositorio (`Settings > Pages > Branch: main`) para ver tu app en línea de forma gratuita.
+Puedes integrar estos textos directamente en tu aplicación web o en las páginas de políticas requeridas por Google Play Store.
