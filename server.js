@@ -1,56 +1,55 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const PixPayoutService = require('./payoutService');
+const MercadoPagoPixService = require('./mercadopagoService');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT || 3000;
-const pixService = new PixPayoutService(process.env.MERCADO_PAGO_ACCESS_TOKEN);
+const mpService = new MercadoPagoPixService(process.env.MERCADO_PAGO_ACCESS_TOKEN);
 
+// Base de datos de ejemplo
 let usersDB = {
-    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 10000, email: "rafael@example.com" }
+    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 10000 }
 };
 
-// Postback endpoint for Offerwalls
-app.get('/api/postback', (req, res) => {
-    const { userId, reward, offerId, signature } = req.query;
-    if (!userId || !reward) return res.status(400).json({ error: "Parámetros incompletos" });
-
-    const rewardAmount = parseInt(reward, 10);
-    if (!usersDB[userId]) usersDB[userId] = { id: userId, name: "Usuario", coins: 0 };
-    usersDB[userId].coins += rewardAmount;
-
-    console.log(`[POSTBACK] Usuario ${userId} ganó +${rewardAmount} monedas (Oferta: ${offerId || 'N/A'})`);
-    return res.status(200).json({ success: true, newBalance: usersDB[userId].coins });
-});
-
-// Withdraw endpoint with Pix Payout
 app.post('/api/withdraw-pix', async (req, res) => {
     const { userId, pixKey, pixKeyType, amountCoins } = req.body;
     const user = usersDB[userId];
+
     if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
 
     const MIN_COINS = 5000;
-    const CONVERSION_RATE = 1000; // 1000 monedas = R$ 1.00 BRL
+    const RATE = 1000; // 1000 monedas = R$ 1.00
 
     if (amountCoins < MIN_COINS || user.coins < amountCoins) {
-        return res.status(400).json({ error: "Saldo insuficiente" });
+        return res.status(400).json({ error: "Saldo insuficiente o menor al mínimo requerido" });
     }
 
-    const amountBRL = parseFloat((amountCoins / CONVERSION_RATE).toFixed(2));
-    const externalRef = `withdrawal_${userId}_${Date.now()}`;
+    const amountBRL = parseFloat((amountCoins / RATE).toFixed(2));
+    const refId = `payout_${userId}_${Date.now()}`;
 
-    const payoutResult = await pixService.sendPixPayout(externalRef, amountBRL, pixKey, pixKeyType || 'CPF', user.name);
+    // Ejecuta la transferencia real mediante Mercado Pago API
+    const result = await mpService.transferPix(refId, amountBRL, pixKey, pixKeyType || 'CPF', user.name);
 
-    if (payoutResult.success) {
+    if (result.success) {
         user.coins -= amountCoins;
-        return res.status(200).json({ success: true, message: "Retiro Pix procesado", remainingCoins: user.coins });
+        return res.json({
+            success: true,
+            message: "¡Transferencia Pix ejecutada con éxito!",
+            payoutId: result.payoutId,
+            status: result.status,
+            newBalance: user.coins
+        });
     } else {
-        return res.status(500).json({ success: false, error: payoutResult.error });
+        return res.status(500).json({
+            success: false,
+            error: "La API de Mercado Pago rechazó la transferencia",
+            details: result.error
+        });
     }
 });
 
-app.listen(PORT, () => console.log(`RewardApp Master Backend corriendo en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor Mercado Pago Pix activo en puerto ${PORT}`));
