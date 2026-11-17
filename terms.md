@@ -1,4 +1,2 @@
-# Términos y Condiciones - RewardApp
-1. **Recompensas:** Acumulación de monedas virtuales por tiempo de juego y ofertas.
-2. **Retiros:** Mínimo 5,000 monedas canjeables vía Pix (Brasil) o PayPal.
-3. **Fraude:** Prohibido uso de VPN, emuladores y multicuentas. Cuentas fraudulentas serán bloqueadas.
+# Política de Privacidad (LGPD) - RewardApp
+Recopilación de datos de cuenta y claves Pix exclusivamente para procesar pagos y prevenir fraudes cumpliendo con la LGPD de Brasil.

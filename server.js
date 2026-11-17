@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const pixService = new PixPayoutService(process.env.MERCADO_PAGO_ACCESS_TOKEN);
 
 let usersDB = {
-    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 10000, email: "rafael@example.com" }
+    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 1250, email: "rafael@example.com" }
 };
 
 app.get('/api/postback', (req, res) => {
