@@ -1,41 +1,71 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const axios = require('axios');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.PORT || 3000;
+// Base de datos simulada en memoria (reemplazar con DB real en producción)
+let userBalances = {};
 
-let usersDB = {
-    "user_123": { id: "user_123", name: "Rafael Vasquez", coins: 1250 }
-};
-
-/**
- * Endpoint de Postback universal para BitLabs / CPX Research / Adjoe
- * Cuando el usuario completa una oferta, el proveedor llama a esta URL de forma automática.
- */
-app.get('/api/postback', (req, res) => {
-    // Los parámetros varían ligeramente según el proveedor (ej. uid/sub_id para usuario, reward/payout para la ganancia)
-    const { userId, reward, payout, sub_id, trans_id } = req.query;
-
-    const targetUser = userId || sub_id;
-    const earnedCoins = parseInt(reward || payout, 10);
-
-    if (!targetUser || isNaN(earnedCoins)) {
-        return res.status(400).json({ error: "Parámetros de postback incompletos o inválidos" });
+// Endpoint para verificar estado y anti-fraude básico
+app.get('/api/user/:userId', (req, res) => {
+    const userId = req.params.userId;
+    if (!userBalances[userId]) {
+        userBalances[userId] = { balance: 0, history: [] };
     }
-
-    if (!usersDB[targetUser]) {
-        usersDB[targetUser] = { id: targetUser, name: "Nuevo Usuario", coins: 0 };
-    }
-
-    usersDB[targetUser].coins += earnedCoins;
-
-    console.log(`[POSTBACK RECIBIDO] Usuario: ${targetUser} | Monedas acreditadas: +${earnedCoins} | Transacción: ${trans_id || 'N/A'}`);
-
-    return res.status(200).send("OK");
+    res.json(userBalances[userId]);
 });
 
-app.listen(PORT, () => console.log(`Servidor con Postbacks de Offerwall activo en puerto ${PORT}`));
+// Postback de CPX Research / Offerwalls
+app.get('/api/postback', (req, res) => {
+    const { userId, reward, trans_id } = req.query;
+    
+    if (!userId || !reward) {
+        return res.status(400).send('Parámetros faltantes');
+    }
+
+    if (!userBalances[userId]) {
+        userBalances[userId] = { balance: 0, history: [] };
+    }
+
+    const earned = parseFloat(reward) || 0;
+    userBalances[userId].balance += earned;
+    userBalances[userId].history.push({
+        id: trans_id || Date.now().toString(),
+        amount: earned,
+        date: new Date().toISOString()
+    });
+
+    console.log(`Recompensa acreditada: ${earned} para usuario ${userId}`);
+    res.send('OK');
+});
+
+// Retiro vía Mercado Pago Pix
+app.post('/api/withdraw', async (req, res) => {
+    const { userId, pixKey, amount } = req.body;
+    
+    if (!userBalances[userId] || userBalances[userId].balance < amount) {
+        return res.status(400).json({ success: false, message: 'Saldo insuficiente' });
+    }
+
+    // Descontar saldo
+    userBalances[userId].balance -= amount;
+
+    // Aquí integrarías la llamada real a la API de Mercado Pago Pix payouts
+    // const mpResponse = await axios.post('https://api.mercadopago.com/v1/payments', ...);
+
+    res.json({ 
+        success: true, 
+        message: 'Retiro procesado exitosamente vía Pix',
+        remainingBalance: userBalances[userId].balance 
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+});

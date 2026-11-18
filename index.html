@@ -1,107 +1,103 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RewardApp - Ofertas y Juegos</title>
-    <style>
-        :root {
-            --bg-primary: #120A2A;
-            --bg-card: #1F143F;
-            --accent-gold: #FFD700;
-            --accent-purple: #9333EA;
-            --text-main: #FFFFFF;
-            --text-muted: #A78BFA;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .phone-container { width: 100%; max-width: 420px; height: 100vh; max-height: 850px; background-color: var(--bg-primary); display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        @media (min-width: 425px) { .phone-container { border-radius: 30px; border: 4px solid #3B2065; } }
-        .header { background: linear-gradient(135deg, #2D1559, #1F143F); padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3B2065; }
-        .balance-box { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--accent-gold); }
-        .coin-icon { color: var(--accent-gold); font-size: 1.2rem; font-weight: bold; }
-        .balance-amount { font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); }
-        .content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
-        .section-title { font-size: 1.1rem; margin-bottom: 12px; color: var(--text-muted); font-weight: 600; }
-        
-        /* Offerwall Card */
-        .offerwall-card { background: linear-gradient(135deg, #2D1559, #3B2065); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--accent-purple); text-align: center; }
-        .offerwall-card h3 { color: var(--accent-gold); margin-bottom: 8px; }
-        .offerwall-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
-        .offer-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #120A2A; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%; }
-
-        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; background-color: #170C35; display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid #3B2065; }
-        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-        .nav-item.active { color: var(--accent-gold); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
+    <title>CashReward - Ganhe Recompensas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="phone-container">
-        <div class="header">
-            <h2>🔥 RewardApp</h2>
-            <div class="balance-box">
-                <span class="coin-icon">🪙</span>
-                <span class="balance-amount" id="balance">1,250</span>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-gem"></i> <span>CashReward</span>
             </div>
-        </div>
-        <div class="content">
-            <div id="tab-offers" class="tab-content active">
-                <div class="section-title">Muros de Ofertas Disponibles</div>
-                
-                <div class="offerwall-card">
-                    <h3>💎 BitLabs Ofertas & Juegos</h3>
-                    <p>Completa juegos y encuestas para ganar recompensas instantáneas.</p>
-                    <button class="offer-btn" onclick="openOfferwall('bitlabs')">Abrir BitLabs</button>
-                </div>
-
-                <div class="offerwall-card">
-                    <h3>📋 CPX Research Encuestas</h3>
-                    <p>Comparte tu opinión y gana miles de monedas por encuesta.</p>
-                    <button class="offer-btn" onclick="openOfferwall('cpx')">Abrir CPX Research</button>
-                </div>
+            <div class="user-balance">
+                <i class="fa-solid fa-coins"></i> <span id="balance-amount">0.00</span> BRL
             </div>
+        </header>
 
-            <div id="tab-profile" class="tab-content">
-                <div class="section-title">Mi Cuenta</div>
-                <div class="offerwall-card" style="text-align: left;">
-                    <p><strong>Usuario ID:</strong> user_123</p>
-                    <p style="margin-top: 8px;"><strong>Balance:</strong> <span id="profile-balance">1,250</span> 🪙</p>
+        <!-- Main Content -->
+        <main class="content">
+            <section class="welcome-card">
+                <h2>Bem-vindo ao CashReward!</h2>
+                <p>Responda pesquisas e complete ofertas para ganhar recompensas via Pix instantâneo.</p>
+            </section>
+
+            <!-- Offerwall Section -->
+            <section class="offers-section">
+                <h3><i class="fa-solid fa-clipboard-list"></i> Mural de Ofertas & Pesquisas</h3>
+                <div class="offer-card" onclick="abrirMuroCPX()">
+                    <div class="offer-icon"><i class="fa-solid fa-poll"></i></div>
+                    <div class="offer-info">
+                        <h4>CPX Research Pesquisas</h4>
+                        <p>Ganhe até R$ 5,00 por pesquisa concluída.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right"></i>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="nav-bar">
-            <button class="nav-item active" onclick="switchTab('offers', this)"><span>🎁</span> Ofertas</button>
-            <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span> Perfil</button>
-        </div>
+            <!-- Withdraw Section -->
+            <section class="withdraw-section">
+                <h3><i class="fa-solid fa-wallet"></i> Resgate via Pix</h3>
+                <div class="withdraw-form">
+                    <input type="text" id="pix-key" placeholder="Sua Chave Pix (CPF, E-mail, Tel)">
+                    <input type="number" id="withdraw-amount" placeholder="Valor (R$)">
+                    <button onclick="solicitarRetiro()">Resgatar Agora</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer Nav -->
+        <nav class="bottom-nav">
+            <a href="#" class="active"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="#" onclick="abrirMuroCPX()"><i class="fa-solid fa-gift"></i> Ofertas</a>
+            <a href="#" onclick="alert('Histórico em breve')"><i class="fa-solid fa-history"></i> Histórico</a>
+        </nav>
     </div>
 
     <script>
-        let currentBalance = 1250;
-        const userId = "user_123"; // ID único del usuario actual
+        const userId = 'user_' + Math.random().toString(36).substring(7);
+        const CPX_APP_ID = 'TU_APP_ID'; // Reemplazar con tu ID real de CPX Research
 
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
+        function actualizarBalance() {
+            fetch(`/api/user/${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('balance-amount').innerText = data.balance.toFixed(2);
+                });
         }
 
-        function openOfferwall(provider) {
-            let url = "";
-            if(provider === 'bitlabs') {
-                // Reemplaza con tu ID de oferta de BitLabs y pasa el userId en el sub_id
-                url = `https://web.bitlabs.ai/?uid=${userId}&token=TU_BITLABS_APP_TOKEN`;
-            } else if(provider === 'cpx') {
-                // Reemplaza con tu ID de CPX Research
-                url = `https://offerwall.cpx-research.com/index.php?app_id=TU_CPX_APP_ID&ext_user_id=${userId}`;
-            }
-            
-            // Abre el muro de ofertas en una nueva ventana o pestaña del navegador móvil
+        function abrirMuroCPX() {
+            const url = `https://offerwall.cpx-research.com/index.php?app_id=${CPX_APP_ID}&ext_user_id=${userId}`;
             window.open(url, '_blank');
         }
+
+        function solicitarRetiro() {
+            const pixKey = document.getElementById('pix-key').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+
+            if (!pixKey || !amount) {
+                alert('Por favor preencha todos os campos.');
+                return;
+            }
+
+            fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, pixKey, amount })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                actualizarBalance();
+            });
+        }
+
+        setInterval(actualizarBalance, 5000);
+        actualizarBalance();
     </script>
 </body>
 </html>

@@ -1,18 +1,24 @@
-# Módulo Anti-Fraude - RewardApp
+# CashReward App
 
-Este paquete contiene las herramientas y reglas básicas de seguridad para blindar tu backend contra fraudes comunes en apps de recompensas.
+Aplicación web móvil de recompensas y encuestas optimizada para Brasil, con integración de **CPX Research** y backend en Node.js preparado para pagos vía **Mercado Pago Pix**.
 
-## Qué incluye:
-1. **Detección de Emuladores:** Filtra peticiones cuyo `User-Agent` pertenezca a emuladores populares de PC (BlueStacks, Nox, LDPlayer, etc.).
-2. **Rate Limiter:** Evita que scripts automatizados o bots spamen los endpoints del servidor con clics infinitos.
-3. **Control de Dispositivo:** Preparado para validar identificadores de hardware y evitar multicuentas desde un mismo teléfono.
+## Instrucciones de Instalación y Despliegue
 
-## Cómo integrarlo en tu servidor Express (`server.js`):
-```javascript
-const { antiFraudMiddleware, rateLimiter } = require('./antifraudMiddleware');
+1. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
 
-// Aplicar a rutas críticas como retiros o postbacks
-app.post('/api/withdraw-pix', rateLimiter(5000), antiFraudMiddleware, async (req, res) => {
-    // Lógica de retiro segura...
-});
-```
+2. **Ejecutar localmente:**
+   ```bash
+   npm start
+   ```
+
+3. **Configurar CPX Research:**
+   - Abre `public/index.html`
+   - Reemplaza `'TU_APP_ID'` con tu App ID real obtenido en el panel de publisher de CPX Research.
+
+4. **Desplegar en Render:**
+   - Sube este proyecto a tu repositorio de GitHub.
+   - Crea un nuevo Web Service en Render conectado a tu repo.
+   - Comando de inicio: `npm start`
